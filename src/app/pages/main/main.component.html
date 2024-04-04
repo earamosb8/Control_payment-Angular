@@ -1,0 +1,186 @@
+<mat-card class="login">
+  <mat-card-content ><h1>Payment Control</h1></mat-card-content>
+  <mat-card-content><h2>Usuario</h2></mat-card-content>
+    <mat-form-field class="example-form-field" style="display: block; margin: auto; width: 90%;">
+      <mat-label>Nombres</mat-label>
+      <input  matInput type="text"  [formControl]="nameField" style="text-transform: uppercase;">
+      @if (nombre) {
+        <button matSuffix mat-icon-button aria-label="Clear" (click)="nombre=''">
+          <mat-icon>close</mat-icon>
+        </button>
+      }
+      @if (nameField.hasError('required')) {
+        <mat-error>Nombre es  <strong>requerido</strong></mat-error>
+      }
+      @if (nameField.hasError('invalidCharacters')) {
+        <mat-error>Este campo solo admite <strong>letras</strong></mat-error>
+      }
+
+    </mat-form-field>
+    <mat-form-field class="example-form-field" style="display: block; margin: auto; width: 90%;">
+      <mat-label>identificacion</mat-label>
+      <input  matInput type="text" [formControl]="identificacionField">
+      @if (identificacion) {
+        <button matSuffix mat-icon-button aria-label="Clear" (click)="identificacion=''" >
+          <mat-icon>close</mat-icon>
+        </button>
+      }
+      @if (identificacionField.hasError('required')) {
+        <mat-error>Identificación es  <strong>requerido</strong></mat-error>
+      }
+      @if (identificacionField.hasError('pattern')) {
+        <mat-error>Este campo solo admite <strong>numeros</strong></mat-error>
+      }
+    </mat-form-field>
+    <mat-form-field class="example-form-field" style="display: block; margin: auto; width: 90%;">
+      <mat-label>Celular</mat-label>
+      <input matInput type="text"   [formControl]="celField">
+      @if (celular) {
+        <button matSuffix mat-icon-button aria-label="Clear" (click)="celular=''">
+          <mat-icon>close</mat-icon>
+        </button>
+      }
+      @if (celField.hasError('required')) {
+        <mat-error>Celular es  <strong>requerido</strong></mat-error>
+      }
+      @if (celField.hasError('pattern')) {
+        <mat-error>Este campo solo admite <strong>numeros</strong></mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field style="display: block; margin: auto; width: 90%;">
+      <mat-label>Fecha de pago</mat-label>
+      <input matInput [matDatepicker]="picker" readonly  [formControl]="dateField" >
+      <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+      <mat-datepicker #picker></mat-datepicker>
+      @if (dateField.hasError('required')) {
+        <mat-error>Fecha es  <strong>requerido</strong></mat-error>
+      }
+    </mat-form-field>
+    <button mat-raised-button color="primary" style="display: block; margin: auto; margin-top: 20px;" (click)="guardarUsuario()">
+      Ingresar
+    </button>
+
+
+
+</mat-card>
+<div class="mat-elevation-z8 mytable">
+
+
+<table mat-table [dataSource]="dataSource" >
+
+  <!--- Note that these columns can be defined in any order.
+        The actual rendered columns are set as a property on the row definition" -->
+
+  <!-- Position Column -->
+  <ng-container matColumnDef="Nro.identificación"  >
+    <th mat-header-cell *matHeaderCellDef > No. Documento </th>
+    <td mat-cell *matCellDef="let element" >  {{element.identificacion}}  </td>
+  </ng-container>
+
+  <!-- Name Column -->
+  <ng-container matColumnDef="Nombres">
+    <th mat-header-cell *matHeaderCellDef> Nombres </th>
+    <td mat-cell *matCellDef="let element" style="text-transform: uppercase;"> {{element.nombre}} </td>
+  </ng-container>
+
+  <!-- Weight Column -->
+  <ng-container matColumnDef="Celular">
+    <th mat-header-cell *matHeaderCellDef> Celular </th>
+    <td mat-cell *matCellDef="let element" > {{element.celular}} </td>
+  </ng-container>
+
+  <!-- Symbol Column -->
+  <ng-container matColumnDef="Fecha">
+    <th mat-header-cell *matHeaderCellDef> Fecha </th>
+    <td mat-cell *matCellDef="let element"> {{element.fecha | date:'dd/MM/yyyy'}} </td>
+  </ng-container>
+  <ng-container matColumnDef="Opciones">
+    <th mat-header-cell *matHeaderCellDef> Opciones </th>
+    <td mat-cell *matCellDef="let element; ">
+      <button mat-raised-button color="primary" style="margin-right: 5px;" (click)="editarUsuario(element)">Editar</button>
+      <button  mat-raised-button color="warn" (click)="eliminarUsuario(element)">Eliminar</button>
+
+    </td>
+
+
+  </ng-container>
+
+  <tr mat-header-row *matHeaderRowDef="displayedColumns;sticky: true ;"></tr>
+  <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+</table>
+</div>
+
+
+<!--MODAL PARA EDITAR USUARIO-->
+<div class="modalEdit" *ngIf="openModal">
+  <mat-card class="login">
+    <mat-card-content ><h1>Payment Control</h1></mat-card-content>
+    <mat-card-content><h2>Edit User</h2></mat-card-content>
+      <mat-form-field class="example-form-field" style="display: block; margin: auto; width: 90%;">
+        <mat-label>Nombres</mat-label>
+        <input  matInput type="text"  [formControl]="nameFieldEdit"  style="text-transform: uppercase;">
+        @if (nombre) {
+          <button matSuffix mat-icon-button aria-label="Clear" (click)="nombre=''">
+            <mat-icon>close</mat-icon>
+          </button>
+        }
+        @if (nameFieldEdit.hasError('required')) {
+          <mat-error>Nombre es  <strong>requerido</strong></mat-error>
+        }
+        @if (nameFieldEdit.hasError('invalidCharacters')) {
+          <mat-error>Este campo solo admite <strong>letras</strong></mat-error>
+        }
+      </mat-form-field>
+      <mat-form-field class="example-form-field" style="display: block; margin: auto; width: 90%;">
+        <mat-label>identificacion</mat-label>
+        <input  matInput type="text" [formControl]="identificacionFieldEdit">
+        @if (identificacion) {
+          <button matSuffix mat-icon-button aria-label="Clear" (click)="identificacion=''">
+            <mat-icon>close</mat-icon>
+          </button>
+        }
+        @if (identificacionFieldEdit.hasError('required')) {
+          <mat-error>Identificación es  <strong>requerido</strong></mat-error>
+        }
+        @if (identificacionFieldEdit.hasError('pattern')) {
+          <mat-error>Este campo solo admite <strong>numeros</strong></mat-error>
+        }
+      </mat-form-field>
+      <mat-form-field class="example-form-field" style="display: block; margin: auto; width: 90%;">
+        <mat-label>Celular</mat-label>
+        <input matInput type="text" [formControl]="celFieldEdit" >
+        @if (celular) {
+          <button matSuffix mat-icon-button aria-label="Clear" (click)="celular=''">
+            <mat-icon>close</mat-icon>
+          </button>
+        }
+        @if (celFieldEdit.hasError('required')) {
+          <mat-error>Celular es  <strong>requerido</strong></mat-error>
+        }
+        @if (celFieldEdit.hasError('pattern')) {
+          <mat-error>Este campo solo admite <strong>numeros</strong></mat-error>
+        }
+      </mat-form-field>
+      <mat-form-field style="display: block; margin: auto; width: 90%;">
+        <mat-label>Fecha de pago</mat-label>
+        <input matInput [matDatepicker]="picker2" readonly [formControl]="dateFieldEdit">
+        <mat-datepicker-toggle matIconSuffix [for]="picker2"></mat-datepicker-toggle>
+        <mat-datepicker #picker2></mat-datepicker>
+      </mat-form-field>
+      @if (dateFieldEdit.hasError('required')) {
+        <mat-error>Fecha es  <strong>requerido</strong></mat-error>
+      }
+      <div style="display: flex;">
+        <button mat-raised-button color="primary" style="display: block; margin: auto; margin-top: 20px;" (click)="this.editarUsuarioSeleccionado()">
+          Confirmar
+        </button>
+        <button mat-raised-button color="warn" style="display: block; margin: auto; margin-top: 20px;" (click)="this.openModal = false;">
+          Cancelar
+        </button>
+
+      </div>
+
+  </mat-card>
+</div>
+
