@@ -4,8 +4,8 @@
     <mat-form-field class="example-form-field" style="display: block; margin: auto; width: 90%;">
       <mat-label>Nombres</mat-label>
       <input  matInput type="text"  [formControl]="nameField" style="text-transform: uppercase;">
-      @if (nombre) {
-        <button matSuffix mat-icon-button aria-label="Clear" (click)="nombre=''">
+      @if (this.nameField.value != "") {
+        <button matSuffix mat-icon-button aria-label="Clear" (click)="this.nameField.setValue('')">
           <mat-icon>close</mat-icon>
         </button>
       }
@@ -20,8 +20,8 @@
     <mat-form-field class="example-form-field" style="display: block; margin: auto; width: 90%;">
       <mat-label>identificacion</mat-label>
       <input  matInput type="text" [formControl]="identificacionField">
-      @if (identificacion) {
-        <button matSuffix mat-icon-button aria-label="Clear" (click)="identificacion=''" >
+      @if (this.identificacionField.value != "") {
+        <button matSuffix mat-icon-button aria-label="Clear" (click)="this.identificacionField.setValue('')">
           <mat-icon>close</mat-icon>
         </button>
       }
@@ -35,8 +35,8 @@
     <mat-form-field class="example-form-field" style="display: block; margin: auto; width: 90%;">
       <mat-label>Celular</mat-label>
       <input matInput type="text"   [formControl]="celField">
-      @if (celular) {
-        <button matSuffix mat-icon-button aria-label="Clear" (click)="celular=''">
+      @if (this.celField.value != "") {
+        <button matSuffix mat-icon-button aria-label="Clear" (click)="this.celField.setValue('')">
           <mat-icon>close</mat-icon>
         </button>
       }
@@ -65,7 +65,18 @@
 
 </mat-card>
 <div class="mat-elevation-z8 mytable">
-
+  <mat-form-field class="example-form-field" style="display: block; margin: auto; width: 90%;">
+    <mat-label>Buscar</mat-label>
+    <input  matInput type="text" [formControl]="identificacionSearch" (keyup)="this.buscarUsuario()">
+    @if (this.identificacionSearch.value != "") {
+      <button matSuffix mat-icon-button aria-label="Clear" (click)="this.identificacionSearch.setValue(''); this.buscarUsuario()">
+        <mat-icon>close</mat-icon>
+      </button>
+    }
+    @if (identificacionSearch.hasError('pattern')) {
+      <mat-error>Este campo solo admite <strong>numeros</strong></mat-error>
+    }
+  </mat-form-field>
 
 <table mat-table [dataSource]="dataSource" >
 
@@ -120,8 +131,8 @@
       <mat-form-field class="example-form-field" style="display: block; margin: auto; width: 90%;">
         <mat-label>Nombres</mat-label>
         <input  matInput type="text"  [formControl]="nameFieldEdit"  style="text-transform: uppercase;">
-        @if (nombre) {
-          <button matSuffix mat-icon-button aria-label="Clear" (click)="nombre=''">
+        @if (this.nameFieldEdit.value != "") {
+          <button matSuffix mat-icon-button aria-label="Clear" (click)="this.nameFieldEdit.setValue('')">
             <mat-icon>close</mat-icon>
           </button>
         }
@@ -135,8 +146,8 @@
       <mat-form-field class="example-form-field" style="display: block; margin: auto; width: 90%;">
         <mat-label>identificacion</mat-label>
         <input  matInput type="text" [formControl]="identificacionFieldEdit">
-        @if (identificacion) {
-          <button matSuffix mat-icon-button aria-label="Clear" (click)="identificacion=''">
+        @if (this.identificacionFieldEdit.value != "") {
+          <button matSuffix mat-icon-button aria-label="Clear" (click)="this.identificacionFieldEdit.setValue('')">
             <mat-icon>close</mat-icon>
           </button>
         }
@@ -150,8 +161,8 @@
       <mat-form-field class="example-form-field" style="display: block; margin: auto; width: 90%;">
         <mat-label>Celular</mat-label>
         <input matInput type="text" [formControl]="celFieldEdit" >
-        @if (celular) {
-          <button matSuffix mat-icon-button aria-label="Clear" (click)="celular=''">
+        @if (this.celFieldEdit.value != "") {
+          <button matSuffix mat-icon-button aria-label="Clear" (click)="this.celFieldEdit.setValue('')">
             <mat-icon>close</mat-icon>
           </button>
         }

@@ -15,6 +15,7 @@ import {FormControl,FormsModule,Validators} from "@angular/forms";
 export class MainComponent {
   nameField = new FormControl({ value: '', disabled: false }, [Validators.required, this.onlyLettersAndSpacesValidator()]);
   identificacionField = new FormControl({ value: '', disabled: false }, [Validators.required, Validators.pattern("[0-9]+")]);
+  identificacionSearch = new FormControl({ value: '', disabled: false }, [Validators.required, Validators.pattern("[0-9]+")]);
   celField = new FormControl({ value: '', disabled: false }, [Validators.required, Validators.pattern("[0-9]+")]);
   dateField = new FormControl('',Validators.required);
   nameFieldEdit = new FormControl({ value: '', disabled: false }, [Validators.required, this.onlyLettersAndSpacesValidator()]);
@@ -26,6 +27,7 @@ export class MainComponent {
   celular:string='';
   fecha = new Date();
   usuarios:Usuarios[] =[] ;
+  usuariosFiltrados:Usuarios[] =[] ;
   openModal:boolean=false;
   indice: number = 0 ;
 
@@ -134,6 +136,17 @@ constructor(private datePipe: DatePipe,private cdr: ChangeDetectorRef){
         }
         return null;
       };
+    }
+
+    public buscarUsuario():void{
+      console.log(this.identificacionSearch.value);
+      this.usuariosFiltrados = this.usuarios.filter(usuario => usuario.identificacion === this.identificacionSearch.value);
+      console.log(this.usuariosFiltrados);
+      if(this.usuariosFiltrados.length > 0){
+        this.dataSource = this.usuariosFiltrados;
+      } else {
+        this.dataSource = this.usuarios;
+      }
     }
 }
 
