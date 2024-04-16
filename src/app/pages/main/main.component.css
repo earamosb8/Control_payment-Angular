@@ -7,6 +7,10 @@
   height: 99vh;
 
 }
+.container{
+  margin: auto;
+  margin-top: 100px;
+}
 
 
 .login mat-card-content{
@@ -32,7 +36,6 @@ mat-card-content > h1{
   min-width: 0 !important;
   width: 90% !important;
   margin: auto;
-  margin-top: 30px;
   text-align: center;
   overflow: scroll;
   max-height: 200px;
@@ -84,12 +87,35 @@ th,td{
     height: 600px;
   }
   .mytable{
-    width: 60% !important;
+    width: 100% !important;
     max-height: 80vh !important;
     margin: auto;
-    margin-top: 100px;
   }
 
+}
+
+
+/* Estilo para el contenedor principal de la alerta */
+.my-swal {
+  background-color: #f8f9fa;
+  color: #212529;
+}
+
+/* Estilo para el título de la alerta */
+.my-title {
+  font-size: 24px;
+  color: #007bff;
+}
+
+/* Estilo para el contenido de la alerta */
+.my-content {
+  font-size: 18px;
+}
+
+/* Estilo para el botón de confirmación de la alerta */
+.my-confirm-button {
+  background-color: #28a745;
+  color: white;
 }
 
 

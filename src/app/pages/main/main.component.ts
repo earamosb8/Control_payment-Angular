@@ -3,6 +3,7 @@ import { Usuarios } from './interfaces/users.interface';
 import { DatePipe } from '@angular/common';
 import { MatCard } from '@angular/material/card';
 import {FormControl,FormsModule,Validators} from "@angular/forms";
+import Swal from 'sweetalert2';
 
 
 @Component({
@@ -30,6 +31,7 @@ export class MainComponent {
   usuariosFiltrados:Usuarios[] =[] ;
   openModal:boolean=false;
   indice: number = 0 ;
+  fechaActual: Date = new Date();
 
   displayedColumns: string[] = ['Nombres', 'Nro.identificación', 'Celular', 'Fecha','Opciones'];
   dataSource = this.usuarios;
@@ -47,6 +49,8 @@ constructor(private datePipe: DatePipe,private cdr: ChangeDetectorRef){
 }
 
   ngOnInit(){
+    this.fechaActual = new Date();
+    console.log(this.fechaActual);
     this.cargarUsuarios();
   }
 
@@ -55,31 +59,58 @@ constructor(private datePipe: DatePipe,private cdr: ChangeDetectorRef){
 
   public  guardarUsuario():void{
     if(this.nameField.valid && this.identificacionField.valid && this.celField.valid && this.dateField.valid){
-      let usuario:Usuarios = {
-        nombre:this.nameField.value,
-        identificacion : this.identificacionField.value,
-        celular : this.celField.value ,
-        fecha: this.dateField.value
-      };
+      let existe = this.usuarios.find(usuario => usuario.identificacion === this.identificacionField.value);
+      if(existe === undefined){
+        let usuario:Usuarios = {
+          nombre:this.nameField.value,
+          identificacion : this.identificacionField.value,
+          celular : this.celField.value ,
+          fecha: this.dateField.value
+        };
+        if(localStorage.getItem('Usuarios')){
+          let storedData = localStorage.getItem('Usuarios') || '{}';
+          this.usuarios = JSON.parse(storedData);
+          this.usuarios.push(usuario);
+          localStorage.setItem('Usuarios', JSON.stringify(this.usuarios))
 
-      if(localStorage.getItem('Usuarios')){
-        let storedData = localStorage.getItem('Usuarios') || '{}';
-        this.usuarios = JSON.parse(storedData);
-        this.usuarios.push(usuario);
-        localStorage.setItem('Usuarios', JSON.stringify(this.usuarios))
 
+          //this.usuarios = JSON.parse(localStorage.getItem('Usuarios'));
+           /*
+            this.usuario.push(usuario);
+            localStorage.setItem('Usuarios', JSON.stringify(this.usuarios))*/
+        }
+        else {
+          this.usuarios.push(usuario);
+          localStorage.setItem('Usuarios', JSON.stringify(this.usuarios))
+        }
+        this.cargarUsuarios();
 
-        //this.usuarios = JSON.parse(localStorage.getItem('Usuarios'));
-         /*
-          this.usuario.push(usuario);
-          localStorage.setItem('Usuarios', JSON.stringify(this.usuarios))*/
       }
-      else {
-        this.usuarios.push(usuario);
-        localStorage.setItem('Usuarios', JSON.stringify(this.usuarios))
+      else{
+        console.log('usuario Existe');
+        Swal.fire(
+          {
+            text:"El usuario con numero de identificación " + this.identificacionField.value + " ya existe",
+            showConfirmButton: true,
+            confirmButtonText: "Ok",
+            confirmButtonColor: "#F44336"
+          }
+        )
       }
-      this.cargarUsuarios();
 
+/*
+ Swal.fire({
+      title: "Confirmar",
+      icon: "question",
+      text: "¿Esta seguro de eliminar el elemento seleccionado?",
+      showCancelButton: true,
+      cancelButtonText: "Cancelar",
+      showConfirmButton: true,
+      confirmButtonText: "Eliminar",
+      confirmButtonColor: "#F44336"
+    }
+
+*/
 
     }
 
@@ -91,11 +122,19 @@ constructor(private datePipe: DatePipe,private cdr: ChangeDetectorRef){
       if(localStorage.getItem('Usuarios')){
         this.usuarios = [];
         let storedData = localStorage.getItem('Usuarios') || '{}';
-        this.usuarios = JSON.parse(storedData);
+        this.usuarios = JSON.parse(storedData,this.reviver);
         this.dataSource = this.usuarios;
         this.cdr.detectChanges();
     }
   }
+
+
+  public reviver = (key:any, value:any) => {
+    if (key === 'fecha') {
+      return new Date(value);
+    }
+    return value;
+  };
 
 
   public eliminarUsuario(user:any):void{
@@ -147,6 +186,11 @@ constructor(private datePipe: DatePipe,private cdr: ChangeDetectorRef){
       } else {
         this.dataSource = this.usuarios;
       }
+    }
+
+    public validarIdExiste():void{
+      let existe = this.usuarios.find(usuario => usuario.identificacion === this.identificacionField.value);
+      console.log(existe);
     }
 }
 
