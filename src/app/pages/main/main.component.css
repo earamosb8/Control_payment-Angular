@@ -1,15 +1,47 @@
+body{
+  background-color: #EEEDFE;
+}
+
 .login
 {
   width: 90%;
   display: block;
-  margin: auto;
-  margin-top: 20px;
+  margin-top: 0;
   height: 99vh;
+  background-color: white;
 
 }
 .container{
   margin: auto;
-  margin-top: 100px;
+  margin-top: 50px;
+  width: 60%;
+}
+
+@media screen and (min-width: 1024px) {
+  .app-main
+  {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+  }
+}
+
+@media screen and (max-width: 1023px) {
+  .app-main
+  {
+    width: 100%;
+  }
+  .login
+  {
+    width: 98%;
+    margin: auto;
+    margin-top: 10px;
+    height: 80vh;
+
+  }
+  .container{
+    width: 98%;
+  }
 }
 
 
@@ -19,26 +51,43 @@
 }
 
 mat-card-content:first-child{
-  background-color: cadetblue;
+  background-color: #3C3489;
   color: white;
   height: 50px;
   margin-bottom: 30px;
 
 }
 
+mat-label{
+  color: #6B6B80;
+}
 mat-card-content > h1{
   line-height: 40px;
   width: 90% !important;
 }
 
-.mytable{
 
-  min-width: 0 !important;
-  width: 90% !important;
+
+.mytable {
+  width: 90%;
   margin: auto;
   text-align: center;
-  overflow: scroll;
-  max-height: 200px;
+
+  /* ← esta es la clave, sin esto max-height no aplica */
+}
+
+.table-responsive{
+  overflow-y: auto;
+  display: block;
+  max-height: 500px;
+  border:solid;
+  border-radius: 4px;
+  border-width: 0;
+  box-shadow: 0px 2px 1px -1px rgba(0, 0, 0, 0.2), 0px 1px 1px 0px rgba(0, 0, 0, 0.14), 0px 1px 3px 0px rgba(0, 0, 0, 0.12);;
+}
+
+.mytable table {
+  width: 100%;
 }
 
 th,td{
@@ -83,7 +132,7 @@ th,td{
     width: 400px;
     display: block;
     margin: auto;
-    margin-top: 100px;
+    margin-top: 50px;
     height: 600px;
   }
   .mytable{
@@ -97,7 +146,7 @@ th,td{
 
 /* Estilo para el contenedor principal de la alerta */
 .my-swal {
-  background-color: #f8f9fa;
+  background-color: #EEEDFE;
   color: #212529;
 }
 
@@ -116,6 +165,97 @@ th,td{
 .my-confirm-button {
   background-color: #28a745;
   color: white;
+}
+
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #3d3594;
+  padding: 0 24px;
+  height: 64px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+}
+
+.header-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.header-icon {
+  display: block;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(255, 255, 255, 0.15);
+  border-radius: 8px;
+  width: 36px;
+  height: 36px;
+  color: white;
+}
+
+.header-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: white;
+  letter-spacing: 0.3px;
+}
+
+.header-nav {
+  display: flex;
+  gap: 4px;
+}
+
+.nav-link {
+  color: rgba(255, 255, 255, 0.7);
+  text-decoration: none;
+  font-size: 14px;
+  padding: 6px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+
+.nav-link:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: white;
+}
+
+.nav-link.active {
+  background-color: rgba(255, 255, 255, 0.18);
+  color: white;
+  font-weight: 500;
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.action-btn {
+  color: rgba(255, 255, 255, 0.8) !important;
+}
+
+.action-btn:hover {
+  color: white !important;
+  background-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+.avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background-color: #7F77DD;
+  border: 2px solid rgba(255, 255, 255, 0.4);
+  color: white;
+  font-size: 13px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
 }
 
 
