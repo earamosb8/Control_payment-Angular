@@ -78,7 +78,7 @@ ng serve
 Open your browser at `http://localhost:4200`.
  
 ---
- ##📌 Notes
+ ## 📌 Notes
  
 - 💻 **Storage**: All data is stored exclusively in the browser via `localStorage`. Clearing browser data will permanently delete all registered users.
 - 📅 **Date Handling**: The `fecha` field is serialized as an ISO string when saved and deserialized back to a `Date` object on load using the `reviver` function in `JSON.parse`.
