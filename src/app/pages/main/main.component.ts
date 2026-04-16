@@ -61,14 +61,6 @@ export class MainComponent {
   ];
   dataSource = this.usuarios;
 
-  /*
-  formDatosBasicos = new FormGroup({
-
-    identificacionField: new FormControl({ value: '', disabled: false }, [Validators.required, Validators.pattern("[0-9]+")]),
-    telefonoField: new FormControl({ value: '', disabled: false }, [Validators.required, Validators.pattern("[0-9]+")]),
-    nombreField: new FormControl('', Validators.required)
-  });
-*/
   constructor(
     private datePipe: DatePipe,
     private cdr: ChangeDetectorRef,
@@ -76,9 +68,14 @@ export class MainComponent {
 
   ngOnInit() {
     this.fechaActual = new Date();
-    console.log(this.fechaActual);
     this.cargarUsuarios();
   }
+
+  /**
+   * Guarda un nuevo usuario en localStorage y actualiza la lista.
+   * Valida que todos los campos sean válidos y que el usuario no exista
+   * previamente según su número de identificación.
+   */
 
   public guardarUsuario(): void {
     if (
@@ -102,18 +99,13 @@ export class MainComponent {
           this.usuarios = JSON.parse(storedData);
           this.usuarios.push(usuario);
           localStorage.setItem('Usuarios', JSON.stringify(this.usuarios));
-
-          //this.usuarios = JSON.parse(localStorage.getItem('Usuarios'));
-          /*
-            this.usuario.push(usuario);
-            localStorage.setItem('Usuarios', JSON.stringify(this.usuarios))*/
         } else {
           this.usuarios.push(usuario);
           localStorage.setItem('Usuarios', JSON.stringify(this.usuarios));
         }
         this.cargarUsuarios();
+        this.limpiarCampos();
       } else {
-        console.log('usuario Existe');
         Swal.fire({
           text:
             'El usuario con numero de identificación ' +
@@ -124,22 +116,14 @@ export class MainComponent {
           confirmButtonColor: '#F44336',
         });
       }
-
-      /*
- Swal.fire({
-      title: "Confirmar",
-      icon: "question",
-      text: "¿Esta seguro de eliminar el elemento seleccionado?",
-      showCancelButton: true,
-      cancelButtonText: "Cancelar",
-      showConfirmButton: true,
-      confirmButtonText: "Eliminar",
-      confirmButtonColor: "#F44336"
-    }
-
-*/
     }
   }
+
+  /**
+   * Carga la lista de usuarios almacenada en localStorage.
+   * Parsea las fechas usando el reviver para restaurarlas como objetos Date.
+   * Actualiza el dataSource de la tabla y fuerza la detección de cambios.
+   */
 
   public cargarUsuarios(): void {
     if (localStorage.getItem('Usuarios')) {
@@ -151,6 +135,11 @@ export class MainComponent {
     }
   }
 
+  /**
+   * Función reviver para JSON.parse.
+   * Convierte el campo 'fecha' de string ISO a un objeto Date al deserializar.
+   */
+
   public reviver = (key: any, value: any) => {
     if (key === 'fecha') {
       return new Date(value);
@@ -158,16 +147,11 @@ export class MainComponent {
     return value;
   };
 
-  /*
-  public eliminarUsuario(user:any):void{
-    let indice = this.usuarios.indexOf(user);
-    this.usuarios.splice(indice,1);
-    localStorage.setItem('Usuarios', JSON.stringify(this.usuarios))
-    this.usuarios = [];
-    let storedData = localStorage.getItem('Usuarios') || '{}';
-    this.usuarios = JSON.parse(storedData);
-    this.dataSource = this.usuarios;
-  }*/
+  /**
+   * Elimina un usuario de la lista y actualiza localStorage.
+   * Tras eliminar, vuelve a parsear los datos para mantener
+   * las fechas como objetos Date en el arreglo local.
+   */
 
   public eliminarUsuario(user: any): void {
     let indice = this.usuarios.indexOf(user);
@@ -183,10 +167,14 @@ export class MainComponent {
     this.dataSource = this.usuarios;
   }
 
+  /**
+   * Abre el modal de edición y carga los datos del usuario
+   * seleccionado en los campos del formulario de edición.
+   */
+
   public editarUsuario(user: any): void {
     this.openModal = true;
     this.indice = this.usuarios.indexOf(user);
-    console.log(this.usuarios[this.indice].nombre);
     this.nameFieldEdit.setValue(this.usuarios[this.indice].nombre);
     this.identificacionFieldEdit.setValue(
       this.usuarios[this.indice].identificacion,
@@ -194,6 +182,11 @@ export class MainComponent {
     this.celFieldEdit.setValue(this.usuarios[this.indice].celular);
     this.dateFieldEdit.setValue(this.usuarios[this.indice].fecha);
   }
+
+  /**
+   * Guarda los cambios del usuario editado si todos los campos del
+   * formulario de edición son válidos. Actualiza localStorage y cierra el modal.
+   */
 
   public editarUsuarioSeleccionado() {
     if (
@@ -212,6 +205,11 @@ export class MainComponent {
     }
   }
 
+  /**
+   * Validador personalizado que rechaza valores con caracteres
+   * distintos a letras y espacios (sin números ni símbolos).
+   */
+
   onlyLettersAndSpacesValidator() {
     return (control: any) => {
       if (control.value && !/^[A-Za-z\s]+$/.test(control.value)) {
@@ -221,24 +219,44 @@ export class MainComponent {
     };
   }
 
+  /**
+   * Filtra la lista de usuarios en base al valor ingresado en el campo de búsqueda.
+   * Busca coincidencias desde el inicio del número de identificación.
+   * Si el campo está vacío, restaura la lista completa.
+   */
   public buscarUsuario(): void {
-     const busqueda = this.identificacionSearch.value?.toString().trim() ?? '';
-     if (busqueda === '') {
-       this.dataSource = this.usuarios;
-       return;
-     }
-     this.usuariosFiltrados = this.usuarios.filter((usuario) =>
-       usuario.identificacion?.toString().startsWith(busqueda),
-     );
-     this.dataSource = this.usuariosFiltrados;
-
+    const busqueda = this.identificacionSearch.value?.toString().trim() ?? '';
+    if (busqueda === '') {
+      this.dataSource = this.usuarios;
+      return;
+    }
+    this.usuariosFiltrados = this.usuarios.filter((usuario) =>
+      usuario.identificacion?.toString().startsWith(busqueda),
+    );
+    this.dataSource = this.usuariosFiltrados;
   }
 
+  /**
+   * Verifica si ya existe un usuario registrado con la identificación
+   * actualmente ingresada en el campo identificacionField.
+   * (Pendiente: manejar el resultado de la validación.)
+   */
   public validarIdExiste(): void {
     let existe = this.usuarios.find(
       (usuario) => usuario.identificacion === this.identificacionField.value,
     );
-    console.log(existe);
+  }
+
+  /**
+   * Resetea los campos del formulario de registro a su estado inicial,
+   * limpiando valores y marcándolos como pristine y untouched.
+   */
+
+  private limpiarCampos(): void {
+    this.nameField.reset();
+    this.identificacionField.reset();
+    this.celField.reset();
+    this.dateField.reset();
   }
 }
 

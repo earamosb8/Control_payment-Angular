@@ -1,27 +1,90 @@
-# ControlPayment
+# User Management App
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 17.0.3.
+An Angular web application for registering, editing, searching, and deleting users. Data is persisted in the browser's `localStorage` — no backend required.
 
-## Development server
+---
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+## Features
 
-## Code scaffolding
+- User registration with real-time field validation
+- Duplicate detection by ID number
+- User editing via a modal dialog
+- User deletion from the list
+- Search and filtering by ID number
+- Data persistence using `localStorage`
+- Notifications powered by **SweetAlert2**
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+---
 
-## Build
+## Tech Stack
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
+| Technology | Purpose |
+|---|---|
+| Angular | Main framework |
+| TypeScript | Development language |
+| Reactive Forms (`FormControl`) | Form handling and validation |
+| localStorage | In-browser data persistence |
+| SweetAlert2 | Alerts and notifications |
 
-## Running unit tests
+---
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+## User Data Structure
 
-## Running end-to-end tests
+Each user record contains the following fields:
 
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
+| Field | Type | Validation |
+|---|---|---|
+| `nombre` | Text | Required, letters and spaces only |
+| `identificacion` | Number | Required, digits only, no duplicates |
+| `celular` | Number | Required, digits only |
+| `fecha` | Date | Required |
 
-## Further help
+---
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+## Core Functions
+
+### `guardarUsuario()`
+Validates all form fields, checks that the ID number is not already registered, and saves the new user to `localStorage`. On success, clears all form fields.
+
+### `cargarUsuarios()`
+Reads users from `localStorage` and updates the table. Uses a `reviver` function to restore date strings as `Date` objects.
+
+### `eliminarUsuario(user)`
+Removes a user from the list by reference and updates `localStorage`.
+
+### `editarUsuario(user)`
+Opens the edit modal and pre-populates the form fields with the selected user's data.
+
+### `editarUsuarioSeleccionado()`
+Saves the changes made in the edit modal, updates the array and `localStorage`, and closes the modal.
+
+### `buscarUsuario()`
+Filters the user list by matching the search input against the start of each user's ID number. If the field is empty, the full list is restored.
+
+### `limpiarCampos()`
+Resets the registration `FormControl` fields, clearing their values and restoring `pristine` and `untouched` states.
+
+---
+
+## Getting Started
+
+```bash
+# Clone the repository
+git clone <repository-url>
+
+# Install dependencies
+npm install
+
+# Run in development mode
+ng serve
+```
+
+Open your browser at `http://localhost:4200`.
+
+---
+
+## Notes
+
+- All data is stored exclusively in the browser via `localStorage`. Clearing browser data will permanently delete all registered users.
+- The `fecha` field is serialized as an ISO string when saved and deserialized back to a `Date` object on load using the `reviver` function in `JSON.parse`.
+- Duplicate ID validation is performed on the client side before saving.
